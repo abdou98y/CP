@@ -21,5 +21,8 @@ from z_protofolio.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('career/',my_view ,name="career")
+    path('career/',careerview ,name="career"),
+    path('career/form/post',careerformdata , name="careerdatapost"),
+    path("contactus/",contactusview,name = 'contactus'),
+    path('contactus/form/post',contactusformdata, name="contactusdatapost"),
 ]
