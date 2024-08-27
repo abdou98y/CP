@@ -25,4 +25,6 @@ urlpatterns = [
     path('career/form/post',careerformdata , name="careerdatapost"),
     path("contactus/",contactusview,name = 'contactus'),
     path('contactus/form/post',contactusformdata, name="contactusdatapost"),
+    path("updates/",updates,name="updates"),
+    path("updates/<int:pk>/",update,name='update-detail')
 ]
