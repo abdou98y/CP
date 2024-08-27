@@ -66,9 +66,32 @@ class AllUpdatesPageAdmin(admin.ModelAdmin):
         return True
 
 
+# projects area 
+# adjusting admin view  of  project page
+
+class ProjectPageFacilitiesInline(admin.TabularInline):
+    model = ProjectPageFacilities
+    extra = 1
+
+class ProjectPageGalleryInline(admin.TabularInline):
+    model = ProjectPageGallery
+    extra = 1
+    
+class ProjectPageAdmin(admin.ModelAdmin):
+    inlines = [ProjectPageFacilitiesInline, ProjectPageGalleryInline]
+
+
+
+
+    
+    
 admin.site.register(CareerPage,CareerPageAdmin) 
 admin.site.register(CareerFormData,CareerFormDataAdmin)
 admin.site.register(ContactUsPage,ContactUsPageAdmin)
 admin.site.register(ContactUsFormData,ContactUsFormDataAdmin)
 admin.site.register(SingleUpdatPage)
 admin.site.register(AllUpdatesPage,AllUpdatesPageAdmin)
+admin.site.register(ProjectPage)
+admin.site.register(ProjectFacilitiesInfo)
+admin.site.register(ProjectGalleryImage)
+

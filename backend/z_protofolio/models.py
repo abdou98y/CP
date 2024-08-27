@@ -20,6 +20,31 @@ def image_proccesing(image):
 
 
 
+# function  to  make sure only  pdf for poucher
+from  django.core.exceptions import ValidationError
+def validate_pdf(pdf):
+    if not pdf.name.endswith('.pdf'):
+        raise ValidationError('Only PDF files are allowed.')
+
+
+
+
+
+
+
+# function to  make sure that only  maps url is  added
+import re
+def maps_url(url):
+    map_patterns = [
+        r'^https://www\.google\.com/maps/',  # Google Maps
+        r'^https://maps\.app\.goo\.gl/',      # Google Maps shortened URL
+        r'^https://www\.openstreetmap\.org/',# OpenStreetMap
+    ]
+
+    if not any(re.match(pattern , url) for pattern in map_patterns):
+        raise ValidationError('The URL must be a valid map link (e.g., Google Maps, OpenStreetMap).\n https://www.google.com/maps/ \n https://maps.app.goo.gl/ \n https://www.openstreetmap.org/' )
+
+
 
 
 
@@ -125,3 +150,73 @@ class AllUpdatesPage(models.Model):
     title = models.CharField(max_length=100)
     updates = models.ManyToManyField(SingleUpdatPage,related_name='updates')
     
+    
+    
+    
+    
+    
+    
+    
+# projects area
+class ProjectGalleryImage(models.Model):
+    # project_page = models.ForeignKey(ProjectPage,related_name='gallery_images',on_delete=models.CASCADE,default=1)
+    Image = models.ImageField(upload_to='z_protofolio/media/projects')
+    
+    def save(self ,*args,**kwargs):
+        if self.Image:
+            self.Image = image_proccesing(self.Image)
+        super().save(*args,**kwargs)
+        
+
+        
+            
+class ProjectFacilitiesInfo(models.Model):
+    # project_page = models.ForeignKey(ProjectPage, related_name='facities', on_delete=models.CASCADE,default=1)
+    facility_info_title = models.CharField(max_length=100)
+    facility_info_text = models.CharField(max_length=255)
+    facility_info_image = models.ImageField(upload_to='z_protofolio/media/projects')
+    
+    def save(self,*args,**kwargs):
+        if self.facility_info_image:
+            self.facility_info_image = image_proccesing(self.facility_info_image)
+        super().save(*args,**kwargs)
+        
+
+
+class ProjectPage(models.Model):
+    project_name = models.CharField(max_length=100)
+    svg_logo = models.ImageField(upload_to='z_protofolio/media/projects')
+    project_discription = models.TextField()
+    location_title = models.CharField(max_length=100)
+    location_text = models.CharField(max_length=255)
+    category_title = models.CharField(max_length=100)
+    category_text = models.CharField(max_length=255)
+    main_image = models.ImageField(upload_to='z_protofolio/media/projects')
+    overview_title = models.CharField(max_length=100)
+    overview_text = models.TextField()
+    poucher_pdf = models.FileField(upload_to='z_protofolio/media/poucher',validators=[validate_pdf])
+    facility_title = models.CharField(max_length=100)
+    facility_text = models.CharField(max_length=255)
+    # facities = models.ManyToManyField(ProjectFacilitiesInfo,related_name="facilities_info")
+    gallery_title = models.CharField(max_length=100)
+    gallery_text = models.CharField(max_length=255)
+    # gallery_images = models.ManyToManyField(ProjectGalleryImage,related_name="gallery_images")
+    location_footer_text = models.CharField(max_length=100)
+    location_description = models.TextField()
+    map_url = models.URLField(validators=[maps_url])
+    ifram_map_url = models.URLField(validators=[maps_url])
+    contact_us_text = models.CharField(max_length=255)
+    
+    def save(self,*args,**kwargs):
+        if self.main_image:
+            self.main_image = image_proccesing(self.main_image)
+        super().save(*args,**kwargs)
+        
+class ProjectPageFacilities(models.Model):
+    project = models.ForeignKey(ProjectPage, on_delete=models.CASCADE)
+    facility = models.ForeignKey(ProjectFacilitiesInfo, on_delete=models.CASCADE)
+
+class ProjectPageGallery(models.Model):
+    project = models.ForeignKey(ProjectPage, on_delete=models.CASCADE)
+    gallery_image = models.ForeignKey(ProjectGalleryImage, on_delete=models.CASCADE)
+                
