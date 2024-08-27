@@ -2,7 +2,7 @@ from typing import Iterable
 from django.db import models
 from django.core.files.storage import default_storage
 import os
-
+from django.urls import reverse
 
 
 # function  to  convert  images to  webp 
@@ -96,6 +96,11 @@ class ContactUsFormData(models.Model):
         return f"{self.id}_{self.name}"
 
 
+
+
+
+
+# updates area
 class SingleUpdatPage(models.Model):
     update_name = models.CharField(max_length=100)
     discreption = models.TextField()
@@ -107,8 +112,16 @@ class SingleUpdatPage(models.Model):
         if self.Image:
             self.Image = image_proccesing(self.Image)
         super().save(*args,**kwargs)
+        
+        
+        all_updates_page = AllUpdatesPage.objects.first()
+        if all_updates_page :
+            all_updates_page.updates.add(self)
+    def get_update_url(self):
+        return reverse('update-detail', args=[self.id])
+
 
 class AllUpdatesPage(models.Model):
     title = models.CharField(max_length=100)
-    updates = models.ManyToManyField(SingleUpdatPage,name='updates')
+    updates = models.ManyToManyField(SingleUpdatPage,related_name='updates')
     

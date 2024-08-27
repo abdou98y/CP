@@ -4,6 +4,7 @@ from .models import *
 
 
 
+
 class CareerPageSerializer(serializers.Serializer):
     head_text=serializers.CharField(max_length=255)
     title=serializers.CharField(max_length=255)
@@ -23,6 +24,9 @@ class CareerFormDataSeializer(serializers.Serializer):
     
     
     
+    
+    
+    
 class ContactUsPageSerializer(serializers.Serializer):
     head_text = serializers.CharField(max_length=150)
     title = serializers.CharField(max_length=255)
@@ -38,4 +42,35 @@ class ContactUsFormDataSeializer(serializers.Serializer):
     
     def create(self, validated_data):
         return ContactUsFormData.objects.create(**validated_data)
+    
+
+
+
+
+
+
+
+
+class SingleUpdatPageSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    update_name = serializers.CharField(max_length=100)
+    discreption = serializers.CharField()
+    Image = serializers.ImageField()
+    read_more_text = serializers.CharField(max_length=255)
+    is_home = serializers.BooleanField()
+
+class AllUpdatesPageserialzer(serializers.Serializer):
+    
+    title = serializers.CharField(max_length=150)
+    updates = SingleUpdatPageSerializer(many = True , read_only =True)
+    
+class RelatedUpdatesSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    update_name = serializers.CharField(max_length=100)
+    discreption = serializers.CharField()
+    Image = serializers.ImageField()
+    
+class SingleUpdatePageSerializerWithRelatedUpdatesSerializer(serializers.Serializer):
+    body = SingleUpdatPageSerializer()
+    relatedupdates=RelatedUpdatesSerializer(many=True,read_only=True)
     
