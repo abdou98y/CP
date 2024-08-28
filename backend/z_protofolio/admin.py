@@ -92,7 +92,12 @@ class AboutUsPageAdmin(admin.ModelAdmin):
 
 
 
-
+# home page area
+class HomePageAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        if HomePage.objects.exists():
+            return False
+        return True
 
 
 admin.site.register(CareerPage,CareerPageAdmin) 
@@ -108,4 +113,7 @@ admin.site.register(AllProjectsPage,AllProjectsPageAdmin)
 admin.site.register(AboutUsPage,AboutUsPageAdmin)
 admin.site.register(AboutUsSection)
 admin.site.register(AboutUsFounder)
+admin.site.register(HomePage,HomePageAdmin)
+admin.site.register(HomePageSlider)
+
 

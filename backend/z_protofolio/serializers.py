@@ -174,3 +174,41 @@ class AboutUsPageSerializer(serializers.Serializer):
     founders = AboutUsFounderSerializer(many=True,read_only=True)
     contactus_text = serializers.CharField()
     
+
+
+
+
+
+
+
+
+
+
+
+class HomePageSliderSerializer(serializers.Serializer):
+    slider_image_video = models.FileField()
+
+class HomePageSerializer(serializers.Serializer):
+    logo = serializers.ImageField()
+    slider_title = serializers.CharField(max_length=255)
+    slider_content = HomePageSliderSerializer(many=True,read_only=True)
+    about_title = serializers.CharField(max_length=255)
+    about_image = serializers.ImageField()
+    years_number = serializers.IntegerField()
+    years_text = serializers.CharField(max_length=155)
+    employee_numbers = serializers.CharField(max_length=50)
+    employee_text = serializers.CharField(max_length=155)
+
+class HomePageProjectsSerializer(serializers.Serializer):
+    project_name = serializers.CharField(max_length=100)
+    project_year = serializers.IntegerField()
+    svg_logo = serializers.ImageField()
+    project_discription = serializers.CharField()
+    gallery_images  =  ProjectGalleryImageSerializer(many =True , read_only =True)
+    location_text = serializers.CharField(max_length=255)
+    
+class HomePageDataSerializer(serializers.Serializer):
+    home_page = HomePageSerializer()
+    home_page_project = HomePageProjectsSerializer(read_only=True)
+    related_projects =AllProjectsPageSingleProjectSerializer(many=True,read_only=True)
+    
