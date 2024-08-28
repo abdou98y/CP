@@ -29,5 +29,6 @@ urlpatterns = [
     path("updates/<int:pk>/",update,name='update-detail'),
     path("projects/",projects,name='projects'),
     path("projects/<int:pk>/",projectpage,name='project-details'),
-    path('aboutus/',aboutus,name="aboutus")
+    path('aboutus/',aboutus,name="aboutus"),
+    path('',home,name='home')
 ]

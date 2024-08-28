@@ -99,6 +99,23 @@ class ContactUsPageView(APIView):
         aboutus_serialized = AboutUsPageSerializer(aboutus)
         return Response({"body":aboutus_serialized.data})
 
+
+
+
+class HomePageView(APIView):
+    def get(self,request):
+        homepage = HomePage.objects.first()
+        serialzed_homepage = HomePageSerializer(homepage)
+        homeproject=ProjectPage.objects.get(is_home=True)
+        serialzed_homeproject = HomePageProjectsSerializer(homeproject)
+        relatedprojects= ProjectPage.objects.exclude(is_home=True)[0:2]
+        serialzed_relatedprojects=AllProjectsPageSingleProjectSerializer(relatedprojects,many=True)
+        homepagedata = HomePageDataSerializer({'home_page':serialzed_homepage.data,'home_page_project':serialzed_homeproject.data,'related_projects':serialzed_relatedprojects.data})
+        return Response({'body':homepagedata.data})
+
+
+
+
 careerview = CareerView.as_view()
 careerformdata = CareerFormDataPost.as_view()
 contactusview = ContactUSView.as_view()
@@ -108,3 +125,4 @@ update =  SingleUpdatePageView.as_view()
 projectpage = ProjectPageView.as_view()
 projects = AllProjectsView.as_view()
 aboutus =  ContactUsPageView.as_view()
+home = HomePageView.as_view()

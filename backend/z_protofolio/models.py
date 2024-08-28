@@ -52,6 +52,11 @@ def maps_url(url):
 
 
 
+# function to  validate the  image and video slider
+def validate_slider(file):
+    if not file.name.endswith(('.jpg', '.png', '.jpeg','.gif','.webp', '.mp4')) :
+        raise ValidationError('must be  mp4 or image')
+
 
 
 
@@ -292,3 +297,39 @@ class AboutUsFounder(models.Model):
         if self.founder_image:
             self.founder_image = image_proccesing(self.founder_image)
         super().save(*args,**kwargs)
+
+
+
+
+
+
+
+
+
+
+class HomePage(models.Model):
+    logo = models.ImageField(upload_to='z_protofolio/media/home')
+    slider_title = models.CharField(max_length=255)
+    about_title = models.CharField(max_length=255)
+    about_image = models.ImageField()
+    years_number = models.PositiveIntegerField()
+    years_text = models.CharField(max_length=155)
+    employee_numbers = models.CharField(max_length=50)
+    employee_text = models.CharField(max_length=155)
+    
+    
+    
+    
+class HomePageSlider(models.Model):
+    homepage=models.ForeignKey(HomePage,related_name='slider_content',on_delete=models.CASCADE)
+    slider_image_video = models.FileField(upload_to='z_protofolio/media/slider',validators=[validate_slider])
+    
+    def save(self,*args,**kwargs):
+        if self.slider_image_video:
+            if self.slider_image_video.file.name.endswith(('.jpg','.jpeg','.png')):
+                self.slider_image_video = image_proccesing(self.slider_image_video)
+            super().save(*args,**kwargs)
+        super().save(*args,**kwargs)       
+    
+    def __str__(self):
+        return os.path.basename(self.slider_image_video.name)
