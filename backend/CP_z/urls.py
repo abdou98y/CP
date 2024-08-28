@@ -26,5 +26,8 @@ urlpatterns = [
     path("contactus/",contactusview,name = 'contactus'),
     path('contactus/form/post',contactusformdata, name="contactusdatapost"),
     path("updates/",updates,name="updates"),
-    path("updates/<int:pk>/",update,name='update-detail')
+    path("updates/<int:pk>/",update,name='update-detail'),
+    path("projects/",projects,name='projects'),
+    path("projects/<int:pk>/",projectpage,name='project-details'),
+    path('aboutus/',aboutus,name="aboutus")
 ]

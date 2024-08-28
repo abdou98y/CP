@@ -20,6 +20,9 @@ def image_proccesing(image):
 
 
 
+
+
+
 # function  to  make sure only  pdf for poucher
 from  django.core.exceptions import ValidationError
 def validate_pdf(pdf):
@@ -63,17 +66,17 @@ class CareerPage(models.Model):
         if self.imag:
             self.imag = image_proccesing(self.imag)
         super().save(*args, **kwargs)
-        
+
 class CareerFormData(models.Model):
     name = models.CharField(max_length=150)
     email  = models.EmailField()
     phone = models.CharField(max_length=15)
     attachement = models.FileField(upload_to='uploads/')
     message = models.TextField()
-    
+
     def __str__(self) -> str:
         return f"{self.id}_{self.name}"
-    
+
     def save(self ,*args, **kwargs):
         super().save(*args,**kwargs)
         
@@ -145,10 +148,8 @@ class SingleUpdatPage(models.Model):
     def get_update_url(self):
         return reverse('update-detail', args=[self.id])
 
-
 class AllUpdatesPage(models.Model):
     title = models.CharField(max_length=100)
-    updates = models.ManyToManyField(SingleUpdatPage,related_name='updates')
     
     
     
@@ -158,33 +159,9 @@ class AllUpdatesPage(models.Model):
     
     
 # projects area
-class ProjectGalleryImage(models.Model):
-    # project_page = models.ForeignKey(ProjectPage,related_name='gallery_images',on_delete=models.CASCADE,default=1)
-    Image = models.ImageField(upload_to='z_protofolio/media/projects')
-    
-    def save(self ,*args,**kwargs):
-        if self.Image:
-            self.Image = image_proccesing(self.Image)
-        super().save(*args,**kwargs)
-        
-
-        
-            
-class ProjectFacilitiesInfo(models.Model):
-    # project_page = models.ForeignKey(ProjectPage, related_name='facities', on_delete=models.CASCADE,default=1)
-    facility_info_title = models.CharField(max_length=100)
-    facility_info_text = models.CharField(max_length=255)
-    facility_info_image = models.ImageField(upload_to='z_protofolio/media/projects')
-    
-    def save(self,*args,**kwargs):
-        if self.facility_info_image:
-            self.facility_info_image = image_proccesing(self.facility_info_image)
-        super().save(*args,**kwargs)
-        
-
-
 class ProjectPage(models.Model):
     project_name = models.CharField(max_length=100)
+    project_year = models.IntegerField(default=2024)
     svg_logo = models.ImageField(upload_to='z_protofolio/media/projects')
     project_discription = models.TextField()
     location_title = models.CharField(max_length=100)
@@ -197,26 +174,121 @@ class ProjectPage(models.Model):
     poucher_pdf = models.FileField(upload_to='z_protofolio/media/poucher',validators=[validate_pdf])
     facility_title = models.CharField(max_length=100)
     facility_text = models.CharField(max_length=255)
-    # facities = models.ManyToManyField(ProjectFacilitiesInfo,related_name="facilities_info")
-    gallery_title = models.CharField(max_length=100)
     gallery_text = models.CharField(max_length=255)
-    # gallery_images = models.ManyToManyField(ProjectGalleryImage,related_name="gallery_images")
     location_footer_text = models.CharField(max_length=100)
     location_description = models.TextField()
     map_url = models.URLField(validators=[maps_url])
     ifram_map_url = models.URLField(validators=[maps_url])
     contact_us_text = models.CharField(max_length=255)
-    
+    is_home = models.BooleanField(default=False)
+
     def save(self,*args,**kwargs):
         if self.main_image:
             self.main_image = image_proccesing(self.main_image)
         super().save(*args,**kwargs)
-        
-class ProjectPageFacilities(models.Model):
-    project = models.ForeignKey(ProjectPage, on_delete=models.CASCADE)
-    facility = models.ForeignKey(ProjectFacilitiesInfo, on_delete=models.CASCADE)
 
-class ProjectPageGallery(models.Model):
-    project = models.ForeignKey(ProjectPage, on_delete=models.CASCADE)
-    gallery_image = models.ForeignKey(ProjectGalleryImage, on_delete=models.CASCADE)
-                
+    def __str__(self):
+        return self.project_name
+
+class ProjectGalleryImage(models.Model):
+    project_page = models.ForeignKey(ProjectPage,related_name='gallery_images',on_delete=models.CASCADE,default=1)
+    Image = models.ImageField(upload_to='z_protofolio/media/projects')
+    
+    def __str__(self) -> str:
+        return os.path.basename(self.Image.name)+" in "+self.project_page.project_name
+    
+    def save(self ,*args,**kwargs):
+        if self.Image:
+            self.Image = image_proccesing(self.Image)
+        super().save(*args,**kwargs)
+
+class ProjectFacilitiesInfo(models.Model):
+    project_page = models.ForeignKey(ProjectPage, related_name='facities', on_delete=models.CASCADE,default=1)
+    facility_info_title = models.CharField(max_length=100)
+    facility_info_text = models.CharField(max_length=255)
+    facility_info_image = models.ImageField(upload_to='z_protofolio/media/projects')
+
+    def __str__(self) :
+        return self.facility_info_title+" in "+self.project_page.project_name
+
+    def save(self,*args,**kwargs):
+        if self.facility_info_image:
+            self.facility_info_image = image_proccesing(self.facility_info_image)
+        super().save(*args,**kwargs)
+        
+class AllProjectsPage(models.Model):
+    title = models.CharField(max_length=150)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class AboutUsPage(models.Model):
+    main_title = models.CharField(max_length=100)
+    first_title = models.CharField(max_length=255)
+    second_title = models.CharField(max_length=255)
+    main_image = models.ImageField(upload_to='z_protofolio/media/apoutus')
+    main_description = models.TextField()
+    second_section_title = models.CharField(max_length=255)
+    second_section_description = models.TextField()
+    company_profile = models.FileField(upload_to='z_protofolio/media/company_profile',validators=[validate_pdf])
+    our_mission_title = models.CharField(max_length=255)
+    our_mission_text = models.TextField()
+    our_mission_image = models.ImageField(upload_to='z_protofolio/media/apoutus')
+    our_vision_title = models.CharField(max_length=255)
+    our_vision_text = models.TextField()
+    our_vision_image = models.ImageField(upload_to='z_protofolio/media/apoutus')
+    mutltible_section_title = models.CharField(max_length=100)
+    our_founders_title = models.CharField(max_length=100)
+    contactus_text = models.TextField()
+    
+    def save(self,*args,**kwargs):
+        if self.main_image :
+            self.main_image = image_proccesing(self.main_image)
+        super().save(*args,**kwargs)
+
+        if self.our_mission_image :
+            self.our_vision_image = image_proccesing(self.our_vision_image)
+        super().save(*args,**kwargs)
+
+        if self.our_vision_image :
+            self.our_mission_image = image_proccesing(self.our_mission_image)
+        super().save(*args,**kwargs)
+
+class AboutUsSection(models.Model):
+    about_us_page = models.ForeignKey(AboutUsPage,related_name="sections",on_delete=models.CASCADE,default=1)
+    section_title = models.CharField(max_length=100)
+    section_text = models.CharField(max_length=255)
+    section_description = models.TextField()
+    section_image = models.ImageField(upload_to='z_protofolio/media/apoutus')
+    
+    def __str__(self):
+        return self.section_title
+    
+    def save(self,*args,**kwargs):
+        if self.section_image:
+            self.section_image = image_proccesing(self.section_image)
+        super().save(*args,**kwargs)
+    
+class AboutUsFounder(models.Model):
+    about_us_page = models.ForeignKey(AboutUsPage,related_name="founders",on_delete=models.CASCADE,default=1)
+    founder_name = models.CharField(max_length=100)
+    founder_title = models.CharField(max_length=100)
+    founder_description = models.TextField()
+    founder_image = models.ImageField(upload_to='z_protofolio/media/apoutus')
+    def __str__(self):
+        return self.founder_name
+    
+    def save(self,*args,**kwargs):
+        if self.founder_image:
+            self.founder_image = image_proccesing(self.founder_image)
+        super().save(*args,**kwargs)

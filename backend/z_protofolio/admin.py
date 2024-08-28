@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from django.http import HttpRequest
 from .models import *
 
 
@@ -66,25 +67,34 @@ class AllUpdatesPageAdmin(admin.ModelAdmin):
         return True
 
 
-# projects area 
-# adjusting admin view  of  project page
 
-class ProjectPageFacilitiesInline(admin.TabularInline):
-    model = ProjectPageFacilities
-    extra = 1
 
-class ProjectPageGalleryInline(admin.TabularInline):
-    model = ProjectPageGallery
-    extra = 1
-    
-class ProjectPageAdmin(admin.ModelAdmin):
-    inlines = [ProjectPageFacilitiesInline, ProjectPageGalleryInline]
+
+# all projects  page area
+class AllProjectsPageAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        if AllProjectsPage.objects.exists():
+            return False
+        return True
 
 
 
 
-    
-    
+
+
+# about us page area 
+class AboutUsPageAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        if AboutUsPage.objects.exists():
+            return False
+        return True
+
+
+
+
+
+
+
 admin.site.register(CareerPage,CareerPageAdmin) 
 admin.site.register(CareerFormData,CareerFormDataAdmin)
 admin.site.register(ContactUsPage,ContactUsPageAdmin)
@@ -94,4 +104,8 @@ admin.site.register(AllUpdatesPage,AllUpdatesPageAdmin)
 admin.site.register(ProjectPage)
 admin.site.register(ProjectFacilitiesInfo)
 admin.site.register(ProjectGalleryImage)
+admin.site.register(AllProjectsPage,AllProjectsPageAdmin)
+admin.site.register(AboutUsPage,AboutUsPageAdmin)
+admin.site.register(AboutUsSection)
+admin.site.register(AboutUsFounder)
 

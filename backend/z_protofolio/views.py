@@ -52,9 +52,12 @@ class ContactUsFormDataPost(APIView):
     
 class AllUpdatesPageView(APIView):
     def get(self,request):
-        all_updates = AllUpdatesPage.objects.first()
-        serializer = AllUpdatesPageserialzer(all_updates)
-        return Response({"body":serializer.data})
+        all_updates_title = AllUpdatesPage.objects.first()
+        all_updates_data= SingleUpdatPage.objects.all()
+        all_updates = SingleUpdatPageSerializer(all_updates_data,many=True)
+        title = AllUpdatesPageSerializer(all_updates_title)
+        body = AllUpdatesDataserialzer({'title':title.data,'updates':all_updates.data})
+        return Response({"body":body.data})
     
     
 class SingleUpdatePageView(APIView):
@@ -74,12 +77,27 @@ class SingleUpdatePageView(APIView):
 
 
 
+class ProjectPageView(APIView):
+    def get(self,request,pk):
+        projectpage = ProjectPage.objects.get(pk = pk)
+        serializer = ProjectPageSerializer(projectpage)
+        return Response({'body':serializer.data})
+
+class AllProjectsView(APIView):
+    def get(self,request):
+        allprojectstitle = AllProjectsPage.objects.first()
+        title_serializer = AllProjectsPageSerializer(allprojectstitle)
+        allprojectdata = ProjectPage.objects.all()
+        data_serializer = AllProjectsPageSingleProjectSerializer(allprojectdata,many=True)
+        fullpage = AllProjectsDataSerializer({'title':title_serializer.data,'data':data_serializer.data})
+        return Response({'body':fullpage.data})
 
 
-
-
-
-
+class ContactUsPageView(APIView):
+    def get(self,request):
+        aboutus = AboutUsPage.objects.first()
+        aboutus_serialized = AboutUsPageSerializer(aboutus)
+        return Response({"body":aboutus_serialized.data})
 
 careerview = CareerView.as_view()
 careerformdata = CareerFormDataPost.as_view()
@@ -87,3 +105,6 @@ contactusview = ContactUSView.as_view()
 contactusformdata = ContactUsFormDataPost.as_view()
 updates = AllUpdatesPageView.as_view()
 update =  SingleUpdatePageView.as_view()
+projectpage = ProjectPageView.as_view()
+projects = AllProjectsView.as_view()
+aboutus =  ContactUsPageView.as_view()
