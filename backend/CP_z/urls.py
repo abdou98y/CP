@@ -17,18 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from z_protofolio.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('career/',careerview ,name="career"),
-    path('career/form/post',careerformdata , name="careerdatapost"),
     path("contactus/",contactusview,name = 'contactus'),
-    path('contactus/form/post',contactusformdata, name="contactusdatapost"),
     path("updates/",updates,name="updates"),
     path("updates/<int:pk>/",update,name='update-detail'),
     path("projects/",projects,name='projects'),
     path("projects/<int:pk>/",projectpage,name='project-details'),
     path('aboutus/',aboutus,name="aboutus"),
     path('',home,name='home')
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
