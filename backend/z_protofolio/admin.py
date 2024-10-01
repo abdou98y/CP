@@ -99,6 +99,12 @@ class HomePageAdmin(admin.ModelAdmin):
             return False
         return True
 
+# footer area
+class FooterAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        if Footer.objects.exists():
+            return False
+        return True
 
 admin.site.register(CareerPage,CareerPageAdmin) 
 admin.site.register(CareerFormData,CareerFormDataAdmin)
@@ -107,6 +113,7 @@ admin.site.register(ContactUsFormData,ContactUsFormDataAdmin)
 admin.site.register(SingleUpdatPage)
 admin.site.register(AllUpdatesPage,AllUpdatesPageAdmin)
 admin.site.register(ProjectPage)
+admin.site.register(ProjectCategories)
 admin.site.register(ProjectFacilitiesInfo)
 admin.site.register(ProjectGalleryImage)
 admin.site.register(AllProjectsPage,AllProjectsPageAdmin)
@@ -115,5 +122,5 @@ admin.site.register(AboutUsSection)
 admin.site.register(AboutUsFounder)
 admin.site.register(HomePage,HomePageAdmin)
 admin.site.register(HomePageSlider)
-
+admin.site.register(Footer,FooterAdmin)
 

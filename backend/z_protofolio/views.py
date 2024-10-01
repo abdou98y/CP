@@ -10,17 +10,18 @@ from rest_framework import status
 class CareerView(APIView):
     def get(self, request):
         career = CareerPage.objects.get()
-        serializer = CareerPageSerializer(career)
+        serializer = CareerPageSerializer(career,context={'request': request})
         return Response ({"body":serializer.data})
-
-
-class CareerFormDataPost(APIView):
+    
     def post(self, request):
         serialzer = CareerFormDataSeializer(data=request.data)
         if serialzer.is_valid():
             serialzer.save()
             return Response(serialzer.data, status=status.HTTP_201_CREATED)
         return Response(serialzer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
     
 
 
@@ -33,16 +34,16 @@ class CareerFormDataPost(APIView):
 class ContactUSView(APIView):
     def get(self,request):
         contactus = ContactUsPage.objects.get()
-        serializer = ContactUsPageSerializer(contactus)
+        serializer = ContactUsPageSerializer(contactus,context={'request': request})
         return Response({"body":serializer.data})
 
-class ContactUsFormDataPost(APIView):
     def post(self ,request):
         serializer = ContactUsFormDataSeializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)
+
     
     
     
@@ -56,7 +57,7 @@ class AllUpdatesPageView(APIView):
         all_updates_data= SingleUpdatPage.objects.all()
         all_updates = SingleUpdatPageSerializer(all_updates_data,many=True)
         title = AllUpdatesPageSerializer(all_updates_title)
-        body = AllUpdatesDataserialzer({'title':title.data,'updates':all_updates.data})
+        body = AllUpdatesDataserialzer({'title':title.data,'updates':all_updates.data},context={'request': request})
         return Response({"body":body.data})
     
     
@@ -70,7 +71,7 @@ class SingleUpdatePageView(APIView):
         related_serialzer = RelatedUpdatesSerializer(related_updates,many=True)
         serializer = SingleUpdatPageSerializer(singleupdate)
         final_serializer = SingleUpdatePageSerializerWithRelatedUpdatesSerializer({'body': serializer.data,
-            'relatedupdates': related_serialzer.data})
+            'relatedupdates': related_serialzer.data},context={'request': request})
         return Response(final_serializer.data)
 
 
@@ -80,7 +81,7 @@ class SingleUpdatePageView(APIView):
 class ProjectPageView(APIView):
     def get(self,request,pk):
         projectpage = ProjectPage.objects.get(pk = pk)
-        serializer = ProjectPageSerializer(projectpage)
+        serializer = ProjectPageSerializer(projectpage,context={'request': request})
         return Response({'body':serializer.data})
 
 class AllProjectsView(APIView):
@@ -89,14 +90,14 @@ class AllProjectsView(APIView):
         title_serializer = AllProjectsPageSerializer(allprojectstitle)
         allprojectdata = ProjectPage.objects.all()
         data_serializer = AllProjectsPageSingleProjectSerializer(allprojectdata,many=True)
-        fullpage = AllProjectsDataSerializer({'title':title_serializer.data,'data':data_serializer.data})
+        fullpage = AllProjectsDataSerializer({'title':title_serializer.data,'data':data_serializer.data},context={'request': request})
         return Response({'body':fullpage.data})
 
 
-class ContactUsPageView(APIView):
+class AboutUsPageView(APIView):
     def get(self,request):
         aboutus = AboutUsPage.objects.first()
-        aboutus_serialized = AboutUsPageSerializer(aboutus)
+        aboutus_serialized = AboutUsPageSerializer(aboutus,context={'request': request})
         return Response({"body":aboutus_serialized.data})
 
 
@@ -110,19 +111,23 @@ class HomePageView(APIView):
         serialzed_homeproject = HomePageProjectsSerializer(homeproject)
         relatedprojects= ProjectPage.objects.exclude(is_home=True)[0:2]
         serialzed_relatedprojects=AllProjectsPageSingleProjectSerializer(relatedprojects,many=True)
-        homepagedata = HomePageDataSerializer({'home_page':serialzed_homepage.data,'home_page_project':serialzed_homeproject.data,'related_projects':serialzed_relatedprojects.data})
+        homepagedata = HomePageDataSerializer({'home_page':serialzed_homepage.data,'home_page_project':serialzed_homeproject.data,'related_projects':serialzed_relatedprojects.data},context={'request': request})
         return Response({'body':homepagedata.data})
 
 
 
+class FooterView(APIView):
+    def get(self,request):
+        footer = Footer.objects.first()
+        serialized_footer = FooterSerializer(footer)
+        return Response({'footer':serialized_footer.data})
 
 careerview = CareerView.as_view()
-careerformdata = CareerFormDataPost.as_view()
 contactusview = ContactUSView.as_view()
-contactusformdata = ContactUsFormDataPost.as_view()
 updates = AllUpdatesPageView.as_view()
 update =  SingleUpdatePageView.as_view()
 projectpage = ProjectPageView.as_view()
 projects = AllProjectsView.as_view()
-aboutus =  ContactUsPageView.as_view()
+aboutus =  AboutUsPageView.as_view()
 home = HomePageView.as_view()
+footer = FooterView.as_view()

@@ -1,6 +1,7 @@
 from rest_framework import serializers
+# import versatileimagefield.serializers
 from .models import *
-
+# import versatileimagefield
 
 
 
@@ -9,8 +10,14 @@ class CareerPageSerializer(serializers.Serializer):
     head_text=serializers.CharField(max_length=255)
     title=serializers.CharField(max_length=255)
     big_text= serializers.CharField()
-    imag= serializers.ImageField()
+    # imag= versatileimagefield.serializers.VersatileImageFieldSerializer(
+    #     sizes=[
+    #         ('sm', 'sm__800x800'),
+    #         ('webp', 'webp__2440x1400')
+    #     ]
+    # )
     
+
 class CareerFormDataSeializer(serializers.Serializer):
     name = serializers.CharField(max_length = 150)
     email = serializers.EmailField()
@@ -33,6 +40,9 @@ class ContactUsPageSerializer(serializers.Serializer):
     location_text = serializers.CharField(max_length=255)
     finish_text = serializers.CharField(max_length=255)
     image = serializers.ImageField()
+    description = serializers.CharField()
+    email = serializers.EmailField()
+    phone_number = serializers.IntegerField()
     
 class ContactUsFormDataSeializer(serializers.Serializer):
     name = serializers.CharField(max_length = 150)
@@ -91,6 +101,10 @@ class ProjectFacilitiesInfoSerializer(serializers.Serializer):
     facility_info_text = serializers.CharField(max_length=255)
     facility_info_image = serializers.ImageField()
 
+class ProjectCategoriesSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+
 class ProjectPageSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     project_name = serializers.CharField(max_length=100)
@@ -99,23 +113,25 @@ class ProjectPageSerializer(serializers.Serializer):
     project_discription = serializers.CharField()
     location_title = serializers.CharField(max_length=100)
     location_text = serializers.CharField(max_length=255)
-    category_title = serializers.CharField(max_length=100)
-    category_text = serializers.CharField(max_length=255)
+    category = ProjectCategoriesSerializer()
     main_image = serializers.ImageField()
     overview_title = serializers.CharField(max_length=100)
     overview_text = serializers.CharField()
     poucher_pdf = serializers.FileField()
+    poucher_pdf_button = serializers.CharField()
     facility_title = serializers.CharField(max_length=100)
     facility_text = serializers.CharField(max_length=255)
     facities = ProjectFacilitiesInfoSerializer(many =True , read_only=True)
     gallery_text = serializers.CharField(max_length=255)
+    gallery_second_text = serializers.CharField()
     gallery_images  =  ProjectGalleryImageSerializer(many =True , read_only =True)
     location_footer_text = serializers.CharField(max_length=100)
     location_description = serializers.CharField()
     map_url = serializers.URLField()
     ifram_map_url = serializers.URLField()
     contact_us_text = serializers.CharField(max_length=255)
-    
+    get_direction_button_title =serializers.CharField()
+    contact_us_button_title =serializers.CharField()
     
 class AllProjectsPageSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=150)
@@ -123,6 +139,7 @@ class AllProjectsPageSerializer(serializers.Serializer):
 class AllProjectsPageSingleProjectSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     project_name = serializers.CharField(max_length=100)
+    category = ProjectCategoriesSerializer()
     project_year = serializers.IntegerField()
     main_image = serializers.ImageField()
     
@@ -152,6 +169,19 @@ class AboutUsFounderSerializer(serializers.Serializer):
     founder_description = serializers.CharField()
     founder_image = serializers.ImageField()
 
+    def to_representation(self, instance):
+        object = AboutUsPage.objects.first()
+        
+        representation = super().to_representation(instance)
+        
+        if object and not object.show_founders:
+            representation.pop('founder_name', None)
+            representation.pop('founder_title', None)
+            representation.pop('founder_description', None)
+            representation.pop('founder_image', None)
+        
+        return representation
+
 
 class AboutUsPageSerializer(serializers.Serializer):
     main_title = serializers.CharField(max_length=100)
@@ -162,6 +192,7 @@ class AboutUsPageSerializer(serializers.Serializer):
     second_section_title = serializers.CharField(max_length=255)
     second_section_description = serializers.CharField()
     company_profile = serializers.FileField()
+    download_button_title = serializers.CharField()
     our_mission_title = serializers.CharField(max_length=255)
     our_mission_text = serializers.CharField()
     our_mission_image = serializers.ImageField()
@@ -170,9 +201,11 @@ class AboutUsPageSerializer(serializers.Serializer):
     our_vision_image = serializers.ImageField()
     mutltible_section_title = serializers.CharField(max_length=100)
     sections = AbouUsSectionSerializer(many=True,read_only=True)
+    show_founders = serializers.BooleanField()
     our_founders_title = serializers.CharField(max_length=100)
     founders = AboutUsFounderSerializer(many=True,read_only=True)
     contactus_text = serializers.CharField()
+    contactus_button_title = serializers.CharField()
     
 
 
@@ -211,4 +244,15 @@ class HomePageDataSerializer(serializers.Serializer):
     home_page = HomePageSerializer()
     home_page_project = HomePageProjectsSerializer(read_only=True)
     related_projects =AllProjectsPageSingleProjectSerializer(many=True,read_only=True)
+    
+
+    
+class FooterSerializer(serializers.Serializer): 
+    footer_long_text = serializers.CharField()
+    email = serializers.EmailField()
+    phone = serializers.IntegerField()
+    theird_long_text = serializers.CharField()
+    facebook_url = serializers.URLField()
+    instegram_url = serializers.URLField()
+    linkedin_url = serializers.URLField()
     
