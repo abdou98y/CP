@@ -30,5 +30,6 @@ urlpatterns = [
     path("projects/",projects,name='projects'),
     path("projects/<int:pk>/",projectpage,name='project-details'),
     path('aboutus/',aboutus,name="aboutus"),
-    path('',home,name='home')
+    path('',home,name='home'),
+    path('footer/',footer,name='footer')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

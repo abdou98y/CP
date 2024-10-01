@@ -9,19 +9,16 @@ from django.urls import reverse
 from io import BytesIO
 from django.core.files.base import ContentFile
 from PIL import Image
-def image_proccesing(image):
+def image_proccesing(image,upload_path):
     if image:
         img = Image.open(image)
         output = BytesIO()
         img.save(output, format='WEBP', quality=85)
         output.seek(0)
-        return ContentFile(output.read(), image.name.split('.')[0] + '.webp')
+        webp_filename = f"{image.name.split('.')[0]}.webp"
+        webp_path = os.path.join(upload_path, webp_filename)
+        return ContentFile(output.read(), image.name.split('.')[0] + '.webp') , webp_path
     return image
-
-
-
-
-
 
 
 
@@ -82,12 +79,11 @@ class CareerPage(models.Model):
     title = models.CharField(max_length=255)
     big_text = models.TextField()
     imag = models.ImageField(upload_to='z_protofolio/media/career')
-    
     def save(self, *args, **kwargs):
         if self.imag:
-            self.imag = image_proccesing(self.imag)
+            self.imag= image_proccesing(self.imag)
         super().save(*args, **kwargs)
-
+        
 class CareerFormData(models.Model):
     name = models.CharField(max_length=150)
     email  = models.EmailField()
@@ -259,8 +255,6 @@ class AllProjectsPage(models.Model):
 
 
 
-
-
 class AboutUsPage(models.Model):
     main_title = models.CharField(max_length=100)
     first_title = models.CharField(max_length=255)
@@ -360,3 +354,22 @@ class HomePageSlider(models.Model):
     
     def __str__(self):
         return os.path.basename(self.slider_image_video.name)
+    
+    
+
+
+
+
+
+
+
+
+class Footer(models.Model):
+    footer_long_text = models.TextField()
+    email = models.EmailField()
+    phone = models.IntegerField()
+    theird_long_text = models.TextField()
+    facebook_url = models.URLField()
+    instegram_url = models.URLField()
+    linkedin_url = models.URLField()
+    
