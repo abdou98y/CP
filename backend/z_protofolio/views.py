@@ -116,6 +116,11 @@ class HomePageView(APIView):
 
 
 
+class FooterView(APIView):
+    def get(self,request):
+        footer = Footer.objects.first()
+        serialized_footer = FooterSerializer(footer)
+        return Response({'footer':serialized_footer.data})
 
 careerview = CareerView.as_view()
 contactusview = ContactUSView.as_view()
@@ -125,3 +130,4 @@ projectpage = ProjectPageView.as_view()
 projects = AllProjectsView.as_view()
 aboutus =  AboutUsPageView.as_view()
 home = HomePageView.as_view()
+footer = FooterView.as_view()

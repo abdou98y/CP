@@ -1,6 +1,7 @@
 from rest_framework import serializers
+# import versatileimagefield.serializers
 from .models import *
-
+# import versatileimagefield
 
 
 
@@ -9,8 +10,14 @@ class CareerPageSerializer(serializers.Serializer):
     head_text=serializers.CharField(max_length=255)
     title=serializers.CharField(max_length=255)
     big_text= serializers.CharField()
-    imag= serializers.ImageField()
+    # imag= versatileimagefield.serializers.VersatileImageFieldSerializer(
+    #     sizes=[
+    #         ('sm', 'sm__800x800'),
+    #         ('webp', 'webp__2440x1400')
+    #     ]
+    # )
     
+
 class CareerFormDataSeializer(serializers.Serializer):
     name = serializers.CharField(max_length = 150)
     email = serializers.EmailField()
@@ -237,4 +244,15 @@ class HomePageDataSerializer(serializers.Serializer):
     home_page = HomePageSerializer()
     home_page_project = HomePageProjectsSerializer(read_only=True)
     related_projects =AllProjectsPageSingleProjectSerializer(many=True,read_only=True)
+    
+
+    
+class FooterSerializer(serializers.Serializer): 
+    footer_long_text = serializers.CharField()
+    email = serializers.EmailField()
+    phone = serializers.IntegerField()
+    theird_long_text = serializers.CharField()
+    facebook_url = serializers.URLField()
+    instegram_url = serializers.URLField()
+    linkedin_url = serializers.URLField()
     
