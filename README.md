@@ -14,4 +14,5 @@ This solution is ideal for companies looking to maintain control over their cont
 ### How To Run:
  **open command in  the project folder and run :**
   - source venv/Scripts/activate
+  - cd backend
   - python manage.py runserver
