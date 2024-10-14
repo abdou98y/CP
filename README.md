@@ -10,3 +10,8 @@ This project is a comprehensive portfolio website developed using Django REST Fr
 - **Secure and Scalable**: Built on Django's secure framework, the system supports robust user authentication, role management, and performance optimization for growing businesses.
 
 This solution is ideal for companies looking to maintain control over their content while providing a clean, professional showcase of their work, powered by a secure and efficient backend system.
+
+### How To Run:
+ **open command in  the project folder and run :**
+  - source venv/Scripts/activate
+  - python manage.py runserver
